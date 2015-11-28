@@ -26,7 +26,6 @@ l <- get_all_users(url, group.count)
 
 l.sub <- as.numeric(na.omit(l$uid[sample(group.count, 100)]))
 
-
 d <- data.frame(Person1 = integer(), Person2 = integer() )
 x <- 1
 for (x in 1:length(l.sub)){
@@ -34,29 +33,37 @@ for (x in 1:length(l.sub)){
      Sys.sleep(0.34)
      resp.both <- intersect(fromJSON(resp)$response, l$uid) #l.sub
      d <- rbind(d,     
-                cbind(rep(l$uid[x],
+                cbind(rep(l.sub[x],
                           length(resp.both)),
                       resp.both)
                 )     
 }
 
+
 names(d) <- c('uid', 'uid2')
 
-d_uid <- data.frame(uid = unique(d$uid))
+d_uid <- data.frame(uid = unique(c(d$uid, d$uid2)))
 d_names <- l[, c('uid' ,'first_name', 'last_name')]
-test <- merge(d_uid, d_names, by = 'uid', all.x = T)
+test <- merge(d_uid, d_names, by = 'uid', all.x = T, sort = F)
 test$fullname <- paste0(test$first_name, "_", test$last_name)
 
 vk.network <- graph.data.frame(d, 
                                directed = T)
+vk.for.names <- vk.network
+
+names <- as.numeric(V(vk.for.names)$name)
+names <- data.frame(uid = names)
+names.graph <- merge(d_uid, test, by = 'uid', all.x = T, sort = F)
+
+V(vk.for.names)$name == test$uid
 
 E(vk.network)$color <- hsv(0,0,0,alpha = 0.2)
 E(vk.network)$width <- 1
-E(vk.network)$arrow.size <- 0.2
-V(vk.network)$size <- 4
+E(vk.network)$arrow.size <- 0.1
+V(vk.network)$size <- 3
 V(vk.network)$color <- 'pink'
-V(vk.network)$name <- test$fullname
-t <- layout.kamada.kawai(vk.network)
+V(vk.network)$name <- test$fullname # names.graph$fullname
+# t <- layout.kamada.kawai(vk.network)
 t <- layout.fruchterman.reingold(vk.network)
 plot(vk.network, 
      edge.curved = T,

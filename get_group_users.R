@@ -1,6 +1,7 @@
 library("RCurl") 
 library("jsonlite")
 library("stringr") 
+library("igraph")
 
 # Шаблон запроса подписчиков сообщества
 url <- "http://api.vk.com/method/groups.getMembers?group_id=dixyclub&fields=sex,bdate,city,country" 
@@ -23,10 +24,22 @@ get_all_users <- function(query, gc) {
 
 l <- get_all_users(url, group.count)
 
-d <- integer()
+l.sub <- as.numeric(na.omit(l$uid[sample(group.count, 100)]))
+
+
+d <- data.frame(Person1 = integer(), Person2 = integer() )
 x <- 1
-for (x in 1:30){
-     resp <- getURL(paste0(url2, l$uid[x]))
+for (x in 1:length(l.sub)){
+     resp <- getURL(paste0(url2, l.sub[x]))
      Sys.sleep(0.34)
-     d <- c(d, intersect(fromJSON(resp)$response, l$uid))
+     resp.both <- intersect(fromJSON(resp)$response, l$uid) #l.sub
+     d <- rbind(d,     
+                cbind(rep(l$uid[x],
+                          length(resp.both)),
+                      resp.both)
+                )     
 }
+
+
+
+

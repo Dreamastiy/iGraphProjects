@@ -40,6 +40,16 @@ for (x in 1:length(l.sub)){
                 )     
 }
 
+vk.network <- graph.data.frame(d, 
+                               directed = T)
 
+E(vk.network)$color <- 'black'
+E(vk.network)$width <- 1
+V(vk.network)$size <- 5
+V(vk.network)$color <- 'red'
+t <- layout.kamada.kawai(vk.network)
+plot(vk.network, 
+     edge.curved = T),
+     layout = t)
 
 

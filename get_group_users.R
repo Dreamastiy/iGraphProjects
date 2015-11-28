@@ -5,8 +5,8 @@ library("stringr") # Библиотека для работы с текстом
 # Шаблон запроса подписчиков сообщества
 url <- "http://api.vk.com/method/groups.getMembers?group_id=dixyclub&fields=sex,bdate,city,country" 
 
-# Шаблон запроса подписчиков аккаунта
-url2 <- "https://api.vk.com/method/users.getFollowers?user_id="
+# Шаблон запроса друзей аккаунта
+url2 <- "http://api.vk.com/method/friends.get?user_id="
 
 group.count <- fromJSON(resp)$response$count
 
@@ -23,4 +23,10 @@ get_all_users <- function(query, gc) {
 
 l <- get_all_users(url, group.count)
 
-
+d <- integer()
+x <- 1
+for (x in 1:30){
+     resp <- getURL(paste0(url2, l$uid[x]))
+     Sys.sleep(0.34)
+     d <- c(d, intersect(fromJSON(resp)$response, l$uid))
+}

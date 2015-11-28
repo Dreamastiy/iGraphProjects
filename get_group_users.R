@@ -1,6 +1,6 @@
-library("RCurl") # Библиотека для генерации запросов к API
-library("jsonlite") # Библиотека для обработки JSON
-library("stringr") # Библиотека для работы с текстом
+library("RCurl") 
+library("jsonlite")
+library("stringr") 
 
 # Шаблон запроса подписчиков сообщества
 url <- "http://api.vk.com/method/groups.getMembers?group_id=dixyclub&fields=sex,bdate,city,country" 
